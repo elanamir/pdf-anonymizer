@@ -1,15 +1,18 @@
-var map = require("map");
-var device = require("device");
+var map = require("./map");
+var device = require("./device");
 
 function Anonymizer(fileName, annotationsFile, substitutionFrequencies, characterWhitelist, outputResolution, maskImages) {
 
-    this.doc = new Document(fileName);
+    this.doc = new Document.openDocument(fileName, 'application/pdf');
+
+    console.log(fileName)
+    console.log(this.doc)
     this.annotationsFile = annotationsFile;
 
     this.substitutionFrequencies = substitutionFrequencies;
     this.characterWhitelist = characterWhitelist;
 
-    this.scaleMatrix = Scale(outputResolution/72, outputResolution/72);
+    this.scaleMatrix = Matrix.scale(outputResolution/72, outputResolution/72);
     this.maskImages = maskImages;
 
     this.loadAnnotations = function(pageIndex, outputWidth, outputHeight) {
@@ -50,11 +53,13 @@ function Anonymizer(fileName, annotationsFile, substitutionFrequencies, characte
         var images = [];
         var highlightedImages = [];
         var bounds = [];
+        console.log("count ", this.doc.countPages())
         for (var i = 0; i < this.doc.countPages(); ++i) {
             var result = this.getAnonymizedImage(i, outputFile);
+            console.log("result", result.output)
             images.push(result.output);
             highlightedImages.push(result.highlightedOutput);
-            bounds.push(this.doc.loadPage(i).bound());
+            bounds.push(this.doc.loadPage(i).getBounds());
         }
         this.imagesToPDF(images, bounds, outputFile);
         if (highlightedOutputFile) {
@@ -67,7 +72,7 @@ function Anonymizer(fileName, annotationsFile, substitutionFrequencies, characte
         var page = this.doc.loadPage(pageIndex);
         var characterMap = new map.CharacterMap(page, this.substitutionFrequencies);
 
-        var pixmap = page.toPixmap(this.scaleMatrix, DeviceRGB);
+        var pixmap = page.toPixmap(this.scaleMatrix, ColorSpace.DeviceRGB);
         pixmap.clear(255);
 
         var zoneWhitelist = this.loadAnnotations(pageIndex, pixmap.getWidth(), pixmap.getHeight());
@@ -79,6 +84,8 @@ function Anonymizer(fileName, annotationsFile, substitutionFrequencies, characte
         var outputImage = new Image(tempFile);
 
         for (var k in anonymizingDevice.replacements) {
+            console.log("k", k)
+            
             var r = anonymizingDevice.replacements[k];
             var v = r.vertices;
             var p = new Path();
@@ -88,7 +95,7 @@ function Anonymizer(fileName, annotationsFile, substitutionFrequencies, characte
                 var y = v[j][1];
                 p.lineTo(x, y);
             }
-            anonymizingDevice.fillPath(p, true, Identity, DeviceRGB, r.highlightColor, 0.3);
+            anonymizingDevice.fillPath(p, true, Matrix.identity, ColorSpace.DeviceRGB, r.highlightColor, 0.3);
         }
 
         for (var i = 0; i < zoneWhitelist.length; i++) {
@@ -99,7 +106,7 @@ function Anonymizer(fileName, annotationsFile, substitutionFrequencies, characte
             p.lineTo(z.x2, z.y2);
             p.lineTo(z.x2, z.y1);
             p.lineTo(z.x1, z.y1);
-            anonymizingDevice.strokePath(p, 5, Identity, DeviceRGB, [1, 0, 0], 1.0);
+            anonymizingDevice.strokePath(p, 5, Matrix.identity, ColorSpace.DeviceRGB, [1, 0, 0], 1.0);
         }
 
         pixmap.saveAsPNG(tempFile);

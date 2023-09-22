@@ -28,23 +28,27 @@ function CharacterMap(page, substitutionGroups) {
     var map = {};
     var characterAnalyzer = {
         showGlyph: function(font, matrix, glyph, unicode) {
+            console.log("showGlyph")
             var fontName = font.getName();
             if (!(fontName in map)) {
                 map[fontName] = {};
             }
             map[fontName][unicode] = glyph;
         },
-        fillText: function(text) { text.walk(this); },
-        clipText: function(text) { text.walk(this); },
-        strokeText: function(text) { text.walk(this); },
-        clipStrokeText: function(text) { text.walk(this); },
-        ignoreText: function(text) { text.walk(this); }
+        fillText: function(text) { x, text.walk(this); },
+        clipText: function(text) { x, ext.walk(this); },
+        strokeText: function(text) { x, text.walk(this); },
+        clipStrokeText: function(text) { x, text.walk(this); },
+        ignoreText: function(text) { x, text.walk(this); }
     }
-    page.run(characterAnalyzer, Identity);
+
+    page.run(characterAnalyzer, Matrix.identity);
 
     var fontSubstitutionGroups = {};
     var fontSubstitutionGroupScores = {};
+    console.log(JSON.stringify(map))
     for (var fontName in map) {
+        console.log(fontName)
         fontSubstitutionGroups[fontName] = {};
         fontSubstitutionGroupScores[fontName] = {};
         for (var group in substitutionGroups) {
@@ -72,6 +76,7 @@ function CharacterMap(page, substitutionGroups) {
             }
         }
         var glyph = map[fontName][unicode];
+        console.log(unicode, glyph, score)
         return {unicode: unicode, glyph: glyph, score: score};
     };
 }

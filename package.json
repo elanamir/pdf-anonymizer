@@ -1,0 +1,28 @@
+{
+  "name": "pdf-anonymizer",
+  "version": "1.0.0",
+  "description": "This script takes PDF documents and randomizes the characters within to produce an anonymized version with visual similarities to the original. Characters are substituted with random characters of the same shape, font style, height, and weight. The _approximate_ width of words is maintained to limit unnatural white space in the output. Substitutions are made within three substitution groups to maintain the shape of text: - lowercase letters - uppercase letters - numbers",
+  "main": "anonymize.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sypht-team/pdf-anonymizer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sypht-team/pdf-anonymizer/issues"
+  },
+  "homepage": "https://github.com/sypht-team/pdf-anonymizer#readme",
+  "dependencies": {
+    "g": "^2.0.1",
+    "mupdf": "^0.1.1",
+    "n": "^9.1.0"
+  }
+}

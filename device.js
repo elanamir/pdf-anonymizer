@@ -1,4 +1,4 @@
-var glyph = require("glyph");
+var glyph = require("./glyph");
 
 // Determines how lenient the algorithm will be when finding anonymized text of
 // similar dimensions to the original text. If the distance between the end of
@@ -20,7 +20,7 @@ var BackOffAmount = 1.5;
 
 function AnonymizingDevice(pixmap, characterMap, characterWhitelist, zoneWhitelist, maskImages) {
 
-    this.dd = DrawDevice(Identity, pixmap);
+    this.dd = DrawDevice(Matrix.identity, pixmap);
     this.characterMap = characterMap;
     this.characterWhitelist = characterWhitelist;
     this.zoneWhitelist = zoneWhitelist;
@@ -32,6 +32,7 @@ function AnonymizingDevice(pixmap, characterMap, characterWhitelist, zoneWhiteli
     this.maskImages = maskImages;
 
     this.anonymizeText = function (text, ctm) {
+        console.log("anonymizeText")
         var glyphs = this.textToGlyphs(text, ctm);
         var chunks = this.tokenize(glyphs);
         var anonymizedText = new Text();
@@ -134,22 +135,27 @@ function AnonymizingDevice(pixmap, characterMap, characterWhitelist, zoneWhiteli
     };
 
     this.fillText = function(text, ctm, colorSpace, color, alpha) {
+        console.log("fill")
         text = this.anonymizeText(text, ctm);
         return this.dd.fillText(text, ctm, colorSpace, color, alpha);
     };
     this.clipText = function(text, ctm) {
+        console.log("clip")
         text = this.anonymizeText(text, ctm);
         return this.dd.clipText(text, ctm);
     };
     this.strokeText = function(text, stroke, ctm, colorSpace, color, alpha) {
+        console.log("stroke")
         text = this.anonymizeText(text, ctm);
         return this.dd.strokeText(text, stroke, ctm, colorSpace, color, alpha);
     };
     this.clipStrokeText = function(text, stroke, ctm) {
+        console.log("clipstrokes")
         text = this.anonymizeText(text, ctm);
         return this.dd.clipStrokeText(text, stroke, ctm);
     };
     this.ignoreText = function(text, ctm) {
+        console.log("ignore")
         text = this.anonymizeText(text, ctm);
         return this.dd.ignoreText(text, ctm);
     };

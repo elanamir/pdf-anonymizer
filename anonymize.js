@@ -1,4 +1,4 @@
-var pdf = require("pdf");
+var pdf = require('./pdf');
 
 var Resolution = 300;
 

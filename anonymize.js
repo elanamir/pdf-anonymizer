@@ -35,6 +35,8 @@ if (scriptArgs.length > 4) {
     var maskArg = scriptArgs[4].toLowerCase().replace('maskimages=', '');
     maskImages = ["0", "false", "no", "n"].indexOf(maskArg) < 0;
 }
+// XXX
+maseImages = false
 
 var resolution = Resolution;
 if (scriptArgs.length > 5) {

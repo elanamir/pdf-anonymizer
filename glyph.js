@@ -94,7 +94,7 @@ Glyph.prototype.isWithin = function(zones) {
 
 Glyph.prototype.randomize = function(characterMap, characterWhitelist, zoneWhitelist) {
     var unicode, glyph, highlightColor;
-    if (this.isWithin(zoneWhitelist)) {
+    if (!this.isWithin(zoneWhitelist)) {
         unicode = this.unicode;
         glyph = this.glyph;
         highlightColor = [0, 0, 1];

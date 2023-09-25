@@ -36,7 +36,7 @@ if (scriptArgs.length > 4) {
     maskImages = ["0", "false", "no", "n"].indexOf(maskArg) < 0;
 }
 // XXX
-maseImages = false
+maskImages = false
 
 var resolution = Resolution;
 if (scriptArgs.length > 5) {
